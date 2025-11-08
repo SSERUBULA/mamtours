@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\main;
 use Illuminate\Http\Request;
+use App\Models\SmsOutbox;
+
 
 class MainController extends Controller
 {
@@ -66,7 +68,24 @@ class MainController extends Controller
         $mains->Address = $request->input('address');
         $mains->Car = $request->input('car');
         $mains->save();
-        return redirect()->route('contactus');
+        // return redirect()->route('contactus');
+          $request->validate([
+            'fullname' => 'required',
+            'number' => 'required',
+            'Address' => 'required',
+            'car' => 'required',
+        ]);
+
+        // simulate sending SMS by saving it in sms_outboxes table
+        SmsOutbox::create([
+            'fullname' => $request->fullname,
+            'phone' => $request->number,
+            'message' => "Hello {$request->fullname}, your message has been received. Thank you!",
+            'status' => 'sent',
+        ]);
+
+        // redirect back with a success message
+        return redirect()->back()->with('success', 'Message received! (SMS simulated)');
     }
 
     /**
