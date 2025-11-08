@@ -15,7 +15,7 @@ class IsAdmin
             return $next($request);
         }
 
-        return redirect('/home'); // or wherever you want non-admins to go
+        return redirect('/home'); 
     }
 
 }
